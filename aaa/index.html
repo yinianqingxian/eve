@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EVE信息面板</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            border-left: 4px solid #2c9a8c;
+            padding-left: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #2c9a8c;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 5px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .stat-value {
+            margin-left: 5px;
+            color: #fff;
+        }
+        
+        .info-panel {
+            border-left: 4px solid #2c9a8c;
+            padding-left: 10px;
+            font-size: 14px;
+            margin-bottom: 15px;
+            color: #2c9a8c;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .info-label {
+            color: #999;
+        }
+        
+        .info-value {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            伍束装甲
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <img src="shield-icon.png" alt="护盾" width="16">
+                <div class="stat-value">54.13</div>
+            </div>
+            <div class="stat-item">
+                <img src="armor-icon.png" alt="装甲" width="16">
+                <div class="stat-value">33.09</div>
+            </div>
+            <div class="stat-item">
+                <img src="structure-icon.png" alt="结构" width="16">
+                <div class="stat-value">0</div>
+            </div>
+            <div class="stat-item">
+                <img src="resistance-icon.png" alt="抗性" width="16">
+                <div class="stat-value">0</div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            基础信息
+        </div>
+        
+        <div class="info-content">
+            <div class="info-row">
+                <div class="info-label">行车等级</div>
+                <div class="info-value">2</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">体积</div>
+                <div class="info-value">5立方米</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">舰船电网需求</div>
+                <div class="info-value">11兆瓦</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">启用时电量</div>
+                <div class="info-value">6.1吉瓦</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">激活时间</div>
+                <div class="info-value">5秒</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
