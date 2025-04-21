@@ -1,0 +1,266 @@
+<style>
+/* .nav-header-inner .v-toolbar__content
+{ 
+background-color: midnightblue; 
+}
+.v-application .black
+{
+background-color: midnightblue !important;
+} 
+.container.pl-5.pt-4.container--fluid.grid-list-xl {
+    background-color: black;
+}
+*/
+/* 修改标题样式 */
+.toc-header {
+    color: white !important;
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+    
+    padding-bottom: 0.5rem;
+}
+
+/* 修改标题锚点链接样式 */
+.toc-header .toc-anchor {
+    color: hsl(325, 80%, 75%) !important;
+    opacity: 0;
+    transition: opacity 0.2s;
+    padding-left: 0.5rem;
+}
+
+/* 鼠标悬停时显示锚点 */
+.toc-header:hover .toc-anchor {
+    opacity: 1;
+}
+ .container img {
+            /* width: 100%; 父级容器宽度占满整个屏幕 */
+            max-width: 1200px; /* 可选：限制最大宽度，防止图片过大 */
+            /*  margin: 0 auto;  水平居中 */
+             /* padding: 10px;添加一些内边距 */
+            border: 1px solid #ccc; /* 添加边框，方便观察容器范围 */
+        }
+a {
+  text-decoration: none
+}
+a:hover {
+  text-decoration: underline
+}
+:root {
+    /* 定义网站字体 */
+    --cover-font-family: "White";
+    /* 定义主题h色调s饱和度l亮度 */
+    --color-primary-override__h: 325;
+    --color-primary-override__s: 60%;
+    --color-primary-override__l: 0%;
+    /* 函数定义整体风格，忽略 */
+    --color-primary-override: hsl(var(--color-primary-override__h), var(--color-primary-override__s), var(--color-primary-override__l));
+    /* 定义顶部菜单栏背景色 */
+    --color-surface-0__h: 200;
+    --color-surface-0__s: 0%;
+    --color-surface-0__l: 0%;
+    /* 定义导航栏背景色 */
+    --color-surface-1__h: 200;
+    --color-surface-1__s: 0%;
+    --color-surface-1__l: 0%;
+    /* 定义表单输入框的背景颜色、浮岛阴影色，打印图标颜色 */
+    --color-surface-2__h: 200;
+    --color-surface-2__s: 0%;
+    --color-surface-2__l: 95%;
+    /* 定义边框颜色？ */
+    --color-surface-3__h: 0;
+    --color-surface-3__s: 60%;
+    --color-surface-3__l: 70%;
+    /* 定义进度条颜色？ */
+    --color-surface-4__h: 0;
+    --color-surface-4__s: 10%;
+    --color-surface-4__l: 74%;
+    /* 下列为函数集合体，忽略 */
+    --color-surface-0: hsl(var(--color-primary-override__h),var(--color-surface-0__s),var(--color-surface-0__l));
+    --color-surface-1: hsl(var(--color-primary-override__h),var(--color-surface-1__s),var(--color-surface-1__l));
+    --color-surface-2: hsl(var(--color-primary-override__h),var(--color-surface-2__s),var(--color-surface-2__l));
+    --color-surface-3: hsl(var(--color-primary-override__h),var(--color-surface-3__s),var(--color-surface-3__l));
+    --color-surface-4: hsl(var(--color-primary-override__h),var(--color-surface-4__s),var(--color-surface-4__l));
+    /* 定义导航栏内容字体颜色 */
+    --color-text-override: hsl(325, 60%, 80%);
+    /* 定义导航栏分割线字体颜色 */
+    --color-text-override--emphasized: hsl(325, 60%, 90%);
+    /* 定义表单输入框的字体颜色 */
+    --color-text-override--subtle: hsl(325, 60%, 85%);
+}
+
+::selection {
+    background: hsla(0, 50%, 54%, 22%);
+}
+
+html {
+    scrollbar-color: var(--color-surface-4) transparent;
+    scrollbar-width: thin;
+}
+
+body, .v-application, .v-application .body-1, .v-application .caption {
+    font-family: var(--cover-font-family) !important;
+}
+/* 代码高亮部分样式控制 */
+pre, code {
+    color: hsl(125, 80%, 30%) !important;
+    background-color: hsl(0, 0%, 90%) !important;
+    padding: 0px 4px !important;
+}
+/* 定义了代码高亮区的边框 */
+.v-main .contents .prismjs {
+    padding: 1rem 1rem 1rem 3rem !important;
+}
+
+.v-application code {
+    padding: unset !important;
+    text-shadow: none !important;
+}
+/* 定义中间浮岛阴影背景色及样式 */
+.v-sheet.v-card:not(.v-sheet--outlined) {
+    box-shadow: 0 0 24px hsl(0, 0%, 85%);
+}
+
+div.code-toolbar > .toolbar button {
+    background: transparent !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+}
+/* 定义h2标题下分割线颜色 */
+.contents hr {
+    background-color: hsl(325, 60%, 65%)!important;
+    height: 2px;
+}
+
+.contents div > p, .v-main .contents ol, .v-main .contents ul:not(.tabset-tabs) {
+    padding-top: 0.5rem !important;
+}
+/* 定义网站名称字体颜色 */
+.v-toolbar__title {
+    color: hsl(325, 60%, 90%);
+    user-select: none;
+    -webkit-user-select: none;
+}
+/* 定义导航栏顶部按钮背景色 */
+.v-application button.primary, .v-application .blue.darken-2 {
+    background-color: hsl(0, 0%, 25%) !important;
+    border-color: var(--color-primary-override) !important;
+}
+
+.page-header-section .page-edit-shortcuts .v-btn .v-icon, .v-main .contents h1, .v-main .contents h2, .v-main .contents h3, .v-main .contents h4, .v-main .contents h5, .v-main .contents h6 {
+    color: var(--color-primary-override) ;
+}
+/* 超链接字体颜色 */
+.v-application a {
+    color: hsl(325, 70%, 84%) !important
+}
+
+.v-main .contents h1, .v-main .contents h2, .v-main .contents h3, .v-main .contents h4, .v-main .contents h5, .v-main .contents h6 {
+    font-weight: 600;
+    margin-top: 1.25rem;
+}
+
+.v-main .contents h1::after, .v-main .contents h2::after, .v-main .contents h3::after, .v-main .contents h4::after, .v-main .contents h5::after, .v-main .contents h6::after {
+    content: none !important;
+}
+
+.__bar-is-vertical {
+    background: var(--color-surface-4) !important;
+}
+/* 定义进度条宽度 */
+.__rail-is-vertical, .__bar-is-vertical {
+    width: 5px !important;
+}
+
+.v-application .primary.v-navigation-drawer {
+    border-color: var(--color-surface-3) !important;
+    border-right: 1px solid;
+}
+
+.v-application .deep-purple, .v-application .blue.darken-3, .v-application .primary {
+    background-color: var(--color-surface-1) !important;
+}
+
+.v-application .grey.lighten-3, .v-application .grey.lighten-4 {
+    background-color: var(--color-surface-2) !important;
+}
+
+.v-navigation-drawer .v-list .mdi:before, .v-navigation-drawer .v-list--dense .v-list-item .v-list-item__title {
+    color: var(--color-text-override) !important;
+}
+
+.v-list-item--link:before {
+    background-color: var(--color-primary-override) !important;
+}
+
+.v-navigation-drawer .theme--dark.v-subheader {
+    color: var(--color-text-override--emphasized) !important;
+}
+/* 边框颜色 */
+.v-application .black {
+    background-color: var(--color-surface-0) !important;
+    border-color: hsl(325, 0%, 0%) !important;
+    border-bottom: 1px solid;
+}
+
+.theme--dark.v-text-field--solo > .v-input__control > .v-input__slot {
+    background: hsl(325, 0%, 12%) !important;
+}
+
+.theme--dark.v-text-field--solo > .v-input__control > .v-input__slot .v-icon::before , .theme--dark.v-text-field--solo > .v-input__control > .v-input__slot label, .theme--dark.v-input, .theme--dark.v-input input, .theme--dark.v-input textarea {
+    color: var(--color-text-override--subtle) !important;
+}
+
+.v-application .v-footer .caption {
+    text-align: center;
+}
+
+.v-application v-footer .caption span:last-child {
+    opacity: 0.5;
+}
+
+.token.builtin, .token.constant, .token.keyword, .token.property, .token.selector, .token.symbol {
+    color: #bca700;
+}
+
+code[class*=language-]::selection, code[class*=language-] ::selection, pre[class*=language-]::selection, pre[class*=language-] ::selection {
+    background: hsla(var(--color-primary-override__h), 5%, 54%, 22%);
+}
+
+@media screen and (max-width: 960px) {
+    .v-toolbar__content button.v-btn.v-btn--icon.v-size--default[aria-label="页面操作"], .v-toolbar__content button.v-btn.v-btn--icon.v-size--default[aria-label="页面操作"] ~ .theme--dark.v-divider, .v-toolbar__content button.v-btn.v-btn--icon.v-size--default[aria-label="创建新页面"], .v-toolbar__content button.v-btn.v-btn--icon.v-size--default[aria-label="创建新页面"] ~ .theme--dark.v-divider {
+        display: none;
+    }
+
+    .v-application footer.grey.lighten-3 {
+        padding: 20px 10px;
+    }
+
+    .__panel {
+        padding-bottom: 7rem !important;
+    }
+
+    .__rail-is-vertical {
+        display: none !important;
+    }
+}
+
+.search-results {
+    background-color: rgba(0, 0, 0, .3);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+}
+
+@keyframes searchResultsReveal {
+    0% {
+        background-color: transparent;
+        padding-top: 32px;
+    }
+
+    to {
+        background-color: rgba(0, 0, 0, .3) !important;
+        padding-top: 0;
+    }
+}
+</style>
