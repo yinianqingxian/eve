@@ -76,11 +76,11 @@
             background-color: #bd3535;
         }
 
-        .structure-fill {
+        .kinetic-fill {
             background-color: #fff;
         }
 
-        .resistance-fill {
+        .explosive-fill {
             background-color: #ff7b00;
         }
     </style>
@@ -126,7 +126,10 @@
             values.forEach(item => {
                 try {
                     const percentage = total > 0 ? (item.value / total) * 100 : 0;
-                    const statItem = statItems.find(el => el.getAttribute('data-type') === item.type);
+                    const statItem = Array.from(statItems).find(el => el.getAttribute('data-type') === item.type);
+                    if (!statItem) {
+                        throw new Error(`未找到类型为 "${item.type}" 的 stat-item 元素`);
+                    }
                     const progressFill = statItem.querySelector('.progress-fill');
                     if (!progressFill) {
                         throw new Error(`在 "${item.type}" 类型中未找到 .progress-fill 元素`);
@@ -147,12 +150,12 @@
             const allStatItems = [
                 { type: 'shield', value: 59.24, icon: '/zhuangbei/shield-icon.png' },
                 { type: 'armor', value: 36.20, icon: '/zhuangbei/armor-icon.png' },
-                { type: 'structure', value: 0, icon: '/zhuangbei/structure-icon.png' },
-                { type: 'resistance', value: 0, icon: '/zhuangbei/resistance-icon.png' },
+                { type: 'kinetic', value: 0, icon: '/zhuangbei/structure-icon.png' },
+                { type: 'explosive', value: 0, icon: '/zhuangbei/resistance-icon.png' },
                 { type: 'shield', value: 20.00, icon: '/zhuangbei/shield-icon.png' },
                 { type: 'armor', value: 40.00, icon: '/zhuangbei/armor-icon.png' },
-                { type: 'structure', value: 30.00, icon: '/zhuangbei/structure-icon.png' },
-                { type: 'resistance', value: 10.00, icon: '/zhuangbei/resistance-icon.png' }
+                { type: 'kinetic', value: 30.00, icon: '/zhuangbei/structure-icon.png' },
+                { type: 'explosive', value: 10.00, icon: '/zhuangbei/resistance-icon.png' }
             ];
 
             // 每四个元素为一组
