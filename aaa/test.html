@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五型小型集束激光炮信息面板</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 300px;
+            margin: 0 auto;
+            background-color: #2a2a2a;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding: 5px 0;
+        }
+        
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 22%;
+        }
+        
+        .stat-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            width: 100%;
+        }
+        
+        .stat-value {
+            margin-left: 5px;
+            color: #fff;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background-color: #333;
+            position: relative;
+            border-radius: 2px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-fill {
+            position: absolute;
+            height: 100%;
+            left: 0;
+            top: 0;
+            border-radius: 2px;
+        }
+        
+        .shield-fill {
+            background-color: #3a7bcf;
+            width: 54.13%;
+        }
+        
+        .armor-fill {
+            background-color: #bd7b35;
+            width: 33.08%;
+        }
+        
+        .structure-fill {
+            background-color: #c43c3c;
+            width: 0%;
+        }
+        
+        .resistance-fill {
+            background-color: #6abd36;
+            width: 0%;
+        }
+        
+        .info-panel {
+            margin-bottom: 15px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 5px 0;
+            border-bottom: 1px solid #333;
+        }
+        
+        .info-label {
+            color: #999;
+        }
+        
+        .info-value {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="laser_cannon_icon.png" alt="" width="50" height="50" style="vertical-align: middle;">
+            五型小型集束激光炮
+            <span style="float: right;">每秒伤害 17.44</span>
+        </div>
+        
+        <div class="info-panel">
+            伤害类型
+        </div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-header">
+                    <img src="shield-icon.png" alt="电伤" width="16">
+                    <div class="stat-value">54.13</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill shield-fill"></div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-header">
+                    <img src="armor-icon.png" alt="热伤" width="16">
+                    <div class="stat-value">33.08</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill armor-fill"></div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-header">
+                    <img src="structure-icon.png" alt="动伤" width="16">
+                    <div class="stat-value">0</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill structure-fill"></div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-header">
+                    <img src="resistance-icon.png" alt="爆伤" width="16">
+                    <div class="stat-value">0</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill resistance-fill"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="info-panel">
+            基础信息
+        </div>
+        
+        <div class="info-content">
+            <div class="info-row">
+                <div class="info-label">衍生等级</div>
+                <div class="info-value">2</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">体积</div>
+                <div class="info-value">5立方米</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">能量栅格需求</div>
+                <div class="info-value">11兆瓦</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">启用耗电量</div>
+                <div class="info-value">6.1吉焦</div>
+            </div>
+            <div class="info-row">
+                <div class="info-label">激活时间</div>
+                <div class="info-value">5秒</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
