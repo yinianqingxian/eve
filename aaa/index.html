@@ -15,7 +15,7 @@
 
         .container {
             max-width: 300px;
-            margin: 0 auto
+            margin: 0 auto;
         }
 
         .header {
@@ -23,40 +23,41 @@
             padding-left: 10px;
             font-size: 14px;
             margin-bottom: 15px;
-            color: #2c9a8c
+            color: #2c9a8c;
         }
 
         .stats {
             display: flex;
             justify-content: space-between;
             margin-bottom: 20px;
-            padding: 5px 0
+            padding: 5px 0;
         }
 
         .stat-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 22%
+            width: 22%;
         }
 
         .stat-header {
             display: flex;
             align-items: center;
             margin-bottom: 5px;
-            width: 100%
+            width: 100%;
         }
 
         .stat-value {
             margin-left: 5px;
-            color: #fff
+            color: #fff;
         }
 
         .progress-bar {
             width: 100%;
             height: 3px;
             background-color: #222;
-            position: relative
+            position: relative;
+            border-radius: 3px;
         }
 
         .progress-fill {
@@ -65,23 +66,23 @@
             left: 0;
             top: 0;
             transition: width .5s ease;
-            border-radius: 5px
+            border-radius: 3px;
         }
 
         .shield-fill {
-            background-color: #3a7bcf
+            background-color: #3a7bcf;
         }
 
         .armor-fill {
-            background-color: #bd3535
+            background-color: #bd3535;
         }
 
         .structure-fill {
-            background-color: #fff
+            background-color: #fff;
         }
 
         .resistance-fill {
-            background-color: #ff7b00
+            background-color: #ff7b00;
         }
 
         .info-panel {
@@ -89,22 +90,22 @@
             padding-left: 10px;
             font-size: 14px;
             margin-bottom: 15px;
-            color: #2c9a8c
+            color: #2c9a8c;
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
             padding: 8px 0;
-            border-bottom: 1px solid #333
+            border-bottom: 1px solid #333;
         }
 
         .info-label {
-            color: #999
+            color: #ccc;
         }
 
         .info-value {
-            color: #fff
+            color: #fff;
         }
     </style>
 </head>
@@ -114,7 +115,7 @@
             伤害类型
         </div>
 
-        <div class="stats" id="stats1">
+        <div class="stats" id="damage-stats">
             <div class="stat-item" data-type="electric">
                 <div class="stat-header">
                     <img src="/zhuangbei/shield-icon.png" alt="电伤" width="16">
@@ -229,12 +230,14 @@
             values.forEach(item => {
                 try {
                     const percentage = total > 0 ? (item.value / total) * 100 : 0;
-                    const statItem = statItems.find(el => el.getAttribute('data-type') === item.type);
+                    const statItem = [...statItems].find(el => el.getAttribute('data-type') === item.type);
                     const progressFill = statItem.querySelector('.progress-fill');
+                    
                     if (!progressFill) {
                         throw new Error(`在 "${item.type}" 类型中未找到 .progress-fill 元素`);
                     }
 
+                    console.log(`Setting width for ${item.type} to ${percentage}%`); // 添加调试日志
                     progressFill.style.width = `${percentage}%`;
                 } catch (error) {
                     logger.error(`更新 ${item.type} 进度条时出错: ${error.message}`);
@@ -244,71 +247,74 @@
 
         // 页面加载后执行
         document.addEventListener('DOMContentLoaded', () => {
-            // 确保在DOM完全加载后再执行计算
             setTimeout(() => {
                 calculateDamagePercentages(document.querySelectorAll('.stat-item'));
-            }, 100); // 添加小延时以确保所有资源都加载完成
-        });
-
-        // 新增一组随机数据
-        const randomData = [
-            { type: 'electric', value: Math.random() * 100 },
-            { type: 'thermal', value: Math.random() * 100 },
-            { type: 'kinetic', value: Math.random() * 100 },
-            { type: 'explosive', value: Math.random() * 100 }
-        ];
-
-        // 动态生成随机数据的 HTML
-        const randomStats = document.createElement('div');
-        randomStats.className = 'stats';
-        randomStats.id = 'stats2';
-
-        const randomHeader = document.createElement('div');
-        randomHeader.className = 'header';
-        randomHeader.textContent = '随机伤害类型';
-        document.querySelector('.container').appendChild(randomHeader);
-
-        randomData.forEach(item => {
-            const statItem = document.createElement('div');
-            statItem.className = 'stat-item';
-            statItem.setAttribute('data-type', item.type);
-
-            const statHeader = document.createElement('div');
-            statHeader.className = 'stat-header';
-
-            const icon = document.createElement('img');
-            icon.src = `/zhuangbei/${item.type}-icon.png`;
-            icon.alt = `${item.type}伤`;
-            icon.width = 16;
-
-            const statValue = document.createElement('div');
-            statValue.className = 'stat-value';
-            statValue.textContent = item.value.toFixed(2);
-
-            statHeader.appendChild(icon);
-            statHeader.appendChild(statValue);
-
-            const progressBar = document.createElement('div');
-            progressBar.className = 'progress-bar';
-
-            const progressFill = document.createElement('div');
-            progressFill.className = `progress-fill ${item.type}-fill`;
-
-            progressBar.appendChild(progressFill);
-            statItem.appendChild(statHeader);
-            statItem.appendChild(progressBar);
-
-            randomStats.appendChild(statItem);
-        });
-
-        document.querySelector('.container').appendChild(randomStats);
-
-        // 计算随机数据的伤害占比
-        document.addEventListener('DOMContentLoaded', () => {
-            setTimeout(() => {
-                calculateDamagePercentages(document.querySelectorAll('#stats2 .stat-item'));
+                generateRandomStats();
             }, 100);
         });
+
+        // 动态生成随机数据的 HTML
+        function generateRandomStats() {
+            const randomData = [
+                { type: 'electric', value: Math.random() * 100 },  // 改为与上方相同的类型
+                { type: 'thermal', value: Math.random() * 100 },
+                { type: 'kinetic', value: Math.random() * 100 },
+                { type: 'explosive', value: Math.random() * 100 }
+            ];
+
+            const typeToFillClass = {
+                'electric': 'shield-fill',
+                'thermal': 'armor-fill',
+                'kinetic': 'structure-fill',
+                'explosive': 'resistance-fill'
+            };
+
+            const randomStats = document.createElement('div');
+            randomStats.className = 'stats';
+            randomStats.id = 'random-damage-stats';
+
+            const randomHeader = document.createElement('div');
+            randomHeader.className = 'header';
+            randomHeader.textContent = '随机伤害类型';
+            document.querySelector('.container').appendChild(randomHeader);
+
+            randomData.forEach(item => {
+                const statItem = document.createElement('div');
+                statItem.className = 'stat-item';
+                statItem.setAttribute('data-type', item.type);
+
+                const statHeader = document.createElement('div');
+                statHeader.className = 'stat-header';
+
+                const icon = document.createElement('img');
+                icon.src = `zhuangbei/${item.type}-icon.png`;
+                icon.alt = `${item.type}伤`;
+                icon.width = 16;
+
+                const statValue = document.createElement('div');
+                statValue.className = 'stat-value';
+                statValue.textContent = item.value.toFixed(2);
+
+                statHeader.appendChild(icon);
+                statHeader.appendChild(statValue);
+
+                const progressBar = document.createElement('div');
+                progressBar.className = 'progress-bar';
+
+                const progressFill = document.createElement('div');
+                progressFill.className = `progress-fill ${typeToFillClass[item.type]}`;
+                progressFill.style.width = '0%';  // 添加初始宽度
+
+                progressBar.appendChild(progressFill);
+                statItem.appendChild(statHeader);
+                statItem.appendChild(progressBar);
+
+                randomStats.appendChild(statItem);
+            });
+
+            document.querySelector('.container').appendChild(randomStats);
+            calculateDamagePercentages(randomStats.querySelectorAll('.stat-item'));
+        }
     </script>
 </body>
 </html>
