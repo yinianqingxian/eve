@@ -1,0 +1,361 @@
+<script>
+    window.onload = function () {
+        console.log('弹窗系统: window.onload 事件触发，所有资源加载完成，开始初始化系统');
+
+        // 通用弹窗管理器
+        const popupManager = {
+            // API基础URL和请求配置
+            apiUrl: 'http://111.231.25.137:3000/graphql',
+
+            // 添加弹窗队列和当前状态
+            popupQueue: [],
+            isShowingPopup: false,
+
+            // 初始化所有弹窗
+            init: function () {
+                console.log('弹窗系统: 初始化开始');
+                this.setupTriggers();
+                this.setupCloseButtons();
+                this.checkForAutoShow();
+                console.log('弹窗系统: 初始化完成');
+            },
+
+            // 设置所有触发按钮
+            setupTriggers: function () {
+                const triggers = document.querySelectorAll('.clickable[data-target]');
+                console.log(`弹窗系统: 设置 ${triggers.length} 个触发按钮`);
+                triggers.forEach(trigger => {
+                    const targetId = trigger.getAttribute('data-target');
+                    console.log(`弹窗系统: 设置触发按钮 -> "${trigger.textContent.trim()}" 指向弹窗 #${targetId}`);
+                    trigger.addEventListener('click', e => {
+                        const targetId = trigger.getAttribute('data-target');
+                        console.log(`弹窗系统: 触发按钮被点击 -> 弹窗 #${targetId}`);
+
+                        const dialog = document.getElementById(targetId);
+                        if (dialog) {
+                            console.log(`弹窗系统: 找到弹窗 #${targetId}，准备加载内容并显示`);
+                            // 打开弹窗时加载内容
+                            this.loadPopupContent(dialog, false);
+
+                            // 添加动画类
+                            dialog.classList.add('animate-zoom');
+
+                            dialog.showModal();
+                            console.log(`弹窗系统: 弹窗 #${targetId} 已显示`);
+
+                            // 动画结束后移除动画类
+                            setTimeout(() => {
+                                dialog.classList.remove('animate-zoom');
+                            }, 300);
+                        } else {
+                            console.error(`弹窗系统: 错误 - 找不到ID为 ${targetId} 的弹窗`);
+                        }
+                    });
+                });
+            },
+
+            // 设置所有关闭按钮
+            setupCloseButtons: function () {
+                const closeButtons = document.querySelectorAll('.popup-close');
+                console.log(`弹窗系统: 设置 ${closeButtons.length} 个关闭按钮`);
+                closeButtons.forEach(closeBtn => {
+                    closeBtn.addEventListener('click', e => {
+                        const dialog = e.target.closest('dialog');
+                        if (dialog) {
+                            console.log(`弹窗系统: 关闭按钮被点击 -> 弹窗 #${dialog.id}`);
+                            dialog.close();
+                            console.log(`弹窗系统: 弹窗 #${dialog.id} 已关闭`);
+
+                            // 关闭当前弹窗后，显示队列中的下一个
+                            this.isShowingPopup = false;
+                            this.showNextPopup();
+                        }
+                    });
+                });
+
+                // 点击背景关闭弹窗
+                const dialogs = document.querySelectorAll('.popup-dialog');
+                console.log(`弹窗系统: 设置 ${dialogs.length} 个弹窗背景点击关闭事件`);
+                dialogs.forEach(dialog => {
+                    dialog.addEventListener('click', e => {
+                        if (e.target === dialog) {
+                            console.log(`弹窗系统: 弹窗背景被点击 -> 弹窗 #${dialog.id}`);
+                            dialog.close();
+                            console.log(`弹窗系统: 弹窗 #${dialog.id} 已关闭`);
+
+                            // 关闭当前弹窗后，显示队列中的下一个
+                            this.isShowingPopup = false;
+                            this.showNextPopup();
+                        }
+                    });
+
+                    // 添加关闭事件监听器，确保即使通过其他方式关闭也能继续队列
+                    dialog.addEventListener('close', () => {
+                        this.isShowingPopup = false;
+                        this.showNextPopup();
+                    });
+                });
+            },
+
+            // 检查是否有需要自动显示的弹窗
+            checkForAutoShow: function () {
+                // 清空队列，准备重新检查所有弹窗
+                this.popupQueue = [];
+                // 重置显示状态，确保队列能够开始显示
+                this.isShowingPopup = false;
+
+                // 获取所有弹窗元素，并按DOM顺序排序
+                const allDialogs = document.querySelectorAll('.popup-dialog');
+                console.log(`弹窗系统: 检查 ${allDialogs.length} 个弹窗是否需要自动显示`);
+
+                // 将所有弹窗添加到队列中，按DOM顺序处理
+                allDialogs.forEach(dialog => {
+                    console.log(`弹窗系统: 处理弹窗 #${dialog.id} 自动显示检查`);
+
+                    // 重要：将所有检查和添加弹窗操作封装在一个方法中
+                    this.checkAndQueuePopup(dialog);
+                });
+            },
+
+            // 新增方法：检查弹窗是否需要显示并加入队列
+            checkAndQueuePopup: function (dialog) {
+                const apiId = dialog.getAttribute('data-api-id');
+                if (!apiId) {
+                    console.error(`弹窗系统: 错误 - 弹窗 #${dialog.id} 没有指定 data-api-id 属性`);
+                    return;
+                }
+
+                this.loadPopupContent(dialog, true, true);
+            },
+
+            // 将弹窗添加到显示队列
+            addToQueue: function (dialog) {
+                console.log(`弹窗系统: 将弹窗 #${dialog.id} 添加到显示队列`);
+                this.popupQueue.push(dialog);
+
+                // 如果当前没有正在显示的弹窗，则开始显示队列
+                if (!this.isShowingPopup) {
+                    this.showNextPopup();
+                }
+            },
+
+            // 显示队列中的下一个弹窗
+            showNextPopup: function () {
+                if (this.popupQueue.length > 0 && !this.isShowingPopup) {
+                    const nextDialog = this.popupQueue.shift();
+                    console.log(`弹窗系统: 从队列显示下一个弹窗 #${nextDialog.id}`);
+
+                    this.isShowingPopup = true;
+
+                    // 添加动画类
+                    nextDialog.classList.add('animate-zoom');
+
+                    nextDialog.showModal();
+                    console.log(`弹窗系统: 弹窗 #${nextDialog.id} 已显示`);
+
+                    // 动画结束后移除动画类，避免重复动画
+                    setTimeout(() => {
+                        nextDialog.classList.remove('animate-zoom');
+                    }, 300); // 动画时长稍长于CSS中定义的0.25s
+                } else {
+                    console.log(`弹窗系统: 队列中没有更多弹窗需要显示，或者当前已有显示的弹窗`);
+                }
+            },
+
+            // 加载弹窗内容
+            loadPopupContent: function (dialog, checkNewContent, queueMode = false) {
+                console.log(`弹窗系统: 开始加载弹窗 #${dialog.id} 的内容，检查新内容模式: ${checkNewContent}, 队列模式: ${queueMode}`);
+
+                // 如果内容已加载且不是检查新内容，则跳过
+                if (dialog.hasAttribute('data-content-loaded') && !checkNewContent) {
+                    console.log(`弹窗系统: 弹窗 #${dialog.id} 的内容已加载，跳过请求`);
+                    return;
+                }
+
+                const apiId = dialog.getAttribute('data-api-id');
+                if (!apiId) {
+                    console.error(`弹窗系统: 错误 - 弹窗 #${dialog.id} 没有指定 data-api-id 属性`);
+                    return;
+                }
+                console.log(`弹窗系统: 弹窗 #${dialog.id} 的 API ID: ${apiId}`);
+
+                // 查找现有容器或创建新容器
+                let contentContainer = dialog.querySelector('.content-container');
+                if (!contentContainer) {
+                    console.log(`弹窗系统: 弹窗 #${dialog.id} 没有找到内容容器，尝试创建`);
+                    const win = dialog.querySelector('.win');
+                    if (win) {
+                        contentContainer = document.createElement('div');
+                        contentContainer.className = 'content-container'; // 移除重复的 notice-content-container 类
+
+                        // 确保容器在win的第一个子元素位置
+                        if (win.firstChild) {
+                            win.insertBefore(contentContainer, win.firstChild);
+                        } else {
+                            win.appendChild(contentContainer);
+                        }
+                        console.log(`弹窗系统: 为弹窗 #${dialog.id} 创建内容容器成功`);
+                    } else {
+                        console.error(`弹窗系统: 错误 - 弹窗 #${dialog.id} 没有找到 .win 元素，无法创建内容容器`);
+                        return;
+                    }
+                }
+
+                // 获取Cookie名称，默认为"lastSeen_" + dialog的id
+                const cookieName = dialog.getAttribute('data-cookie-name') || `lastSeen_${dialog.id}`;
+                console.log(`弹窗系统: 弹窗 #${dialog.id} 的 Cookie 名称: ${cookieName}`);
+
+                // 添加loading指示
+                if (!dialog.hasAttribute('data-content-loaded')) {
+                    console.log(`弹窗系统: 为弹窗 #${dialog.id} 添加加载指示器`);
+                    contentContainer.innerHTML = '<div style="text-align:center;padding:20px;">加载中...</div>';
+                }
+
+                // GraphQL查询
+                const graphqlQuery = {
+                    query: `{
+                        pages {
+                            single(id: ${apiId}) {
+                                content
+                                updatedAt
+                            }
+                        }
+                    }`
+                };
+
+                console.log(`弹窗系统: 发起API请求，查询ID: ${apiId}`);
+                console.log('弹窗系统: 请求内容:', graphqlQuery);
+
+                // 发起GraphQL API请求
+                fetch(this.apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(graphqlQuery)
+                })
+                    .then(response => {
+                        console.log(`弹窗系统: 收到API响应状态: ${response.status}`);
+                        return response.json();
+                    })
+                    .then(result => {
+                        console.log(`弹窗系统: 解析API响应数据:`, result);
+                        const data = result.data?.pages?.single;
+
+                        // 解析和显示内容
+                        if (data && data.content) {
+                            console.log(`弹窗系统: 成功获取弹窗 #${dialog.id} 的内容，内容长度: ${data.content.length} 字符`);
+
+                            // 用marked.js解析Markdown内容
+                            console.log(`弹窗系统: 开始解析Markdown内容`);
+                            const htmlContent = marked.parse(data.content);
+                            console.log(`弹窗系统: Markdown解析完成`);
+
+                            // 创建一个临时元素来解析HTML
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = htmlContent;
+
+                            // 查找id为newnotice的div
+                            const newNoticeDiv = tempDiv.querySelector('#newnotice');
+
+                            // 首先，清空内容容器并添加markdown-content类
+                            contentContainer.innerHTML = '';
+                            contentContainer.classList.add('markdown-content');
+
+                            // 如果找到了id为newnotice的div，就只显示它的内容，否则显示完整内容
+                            if (newNoticeDiv) {
+                                console.log(`弹窗系统: 找到id为newnotice的div，只显示此部分`);
+                                // 直接附加内容，避免创建额外的div
+                                contentContainer.innerHTML = newNoticeDiv.innerHTML;
+                            } else {
+                                console.log(`弹窗系统: 未找到id为newnotice的div，显示完整内容`);
+                                contentContainer.innerHTML = htmlContent;
+                            }
+
+                            // 标记内容已加载
+                            dialog.setAttribute('data-content-loaded', 'true');
+                            console.log(`弹窗系统: 标记弹窗 #${dialog.id} 内容已加载`);
+
+                            // 如果API返回了更新时间，更新data-publish-time属性
+                            if (data.updatedAt) {
+                                dialog.setAttribute('data-publish-time', data.updatedAt);
+                                console.log(`弹窗系统: 弹窗 #${dialog.id} 更新时间: ${data.updatedAt}`);
+                            }
+
+                            // 只有在检查新内容模式下才自动显示弹窗
+                            if (checkNewContent) {
+                                console.log(`弹窗系统: 检查弹窗 #${dialog.id} 是否有新内容`);
+                                // 检查是否是新内容
+                                const lastSeenTime = this.getCookie(cookieName) || '0';
+                                const publishTime = data.updatedAt || new Date().toISOString();
+
+                                console.log(`弹窗系统: 上次查看时间: ${lastSeenTime}`);
+                                console.log(`弹窗系统: 内容更新时间: ${publishTime}`);
+
+                                // 如果是新内容或未曾看过(lastSeenTime为0)，将弹窗添加到队列
+                                if (new Date(publishTime) > new Date(lastSeenTime)) {
+                                    console.log(`弹窗系统: 弹窗 #${dialog.id} 有新内容或首次访问，准备显示`);
+                                    // 更新Cookie，记录已查看时间
+                                    this.setCookie(cookieName, publishTime, 30); // 30天过期
+                                    console.log(`弹窗系统: 更新Cookie ${cookieName} = ${publishTime} (30天过期)`);
+
+                                    if (queueMode) {
+                                        // 队列模式：将弹窗添加到队列
+                                        this.addToQueue(dialog);
+                                    } else {
+                                        // 直接模式：立即显示弹窗
+                                        // 添加动画类
+                                        dialog.classList.add('animate-zoom');
+
+                                        dialog.showModal();
+
+                                        // 动画结束后移除动画类
+                                        setTimeout(() => {
+                                            dialog.classList.remove('animate-zoom');
+                                        }, 300);
+                                    }
+                                } else {
+                                    console.log(`弹窗系统: 弹窗 #${dialog.id} 没有新内容，不显示`);
+                                }
+                            }
+                        } else {
+                            console.error(`弹窗系统: 错误 - API返回的数据中没有内容:`, data);
+                            contentContainer.innerHTML = '<div style="color:orange;text-align:center;padding:20px;">没有找到内容</div>';
+                        }
+                    })
+                    .catch(error => {
+                        console.error(`弹窗系统: 加载弹窗 #${dialog.id} 内容失败:`, error);
+                        contentContainer.innerHTML = '<div style="color:red;text-align:center;padding:20px;">加载失败，请重试</div>';
+                    });
+            },
+
+            // Cookie操作辅助函数
+            setCookie: function (name, value, days) {
+                const date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                const expires = `expires=${date.toUTCString()}`;
+                document.cookie = `${name}=${value};${expires};path=/`;
+                console.log(`弹窗系统: 设置Cookie ${name} = ${value} (${days}天过期)`);
+            },
+
+            getCookie: function (name) {
+                const nameEQ = `${name}=`;
+                const ca = document.cookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                    if (c.indexOf(nameEQ) === 0) {
+                        const value = c.substring(nameEQ.length, c.length);
+                        console.log(`弹窗系统: 读取Cookie ${name} = ${value}`);
+                        return value;
+                    }
+                }
+                console.log(`弹窗系统: Cookie ${name} 不存在`);
+                return null;
+            }
+        };
+
+        // 初始化弹窗系统
+        popupManager.init();
+    };
+</script>
